@@ -1,4 +1,4 @@
-import { Student } from './../student.interface';
+import { Student } from '../models/student.interface';
 import { Component } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
 import { StudentService } from '../services/student.service';
@@ -25,16 +25,26 @@ export class StudentComponent {
   }
 
   getStudents(): any {
-    this.studentService.getStudents().subscribe((data: Student[]) => {
-      this.students = data;
-    });
+    this.studentService.getStudents().subscribe(
+      (data: Student[]) => {
+        this.students = data;
+      },
+      (error) => {
+        this.toast(true, error);
+      }
+    );
   }
 
   uploadStudent(students): any {
-    this.studentService.uploadStudent(students).subscribe((data) => {
-      this.students = data;
-      this.toast(false, this.studentToAdd.length + ' students added');
-    });
+    this.studentService.uploadStudent(students).subscribe(
+      (data) => {
+        this.students = data;
+        this.toast(false, this.studentToAdd.length + ' students added');
+      },
+      (error) => {
+        this.toast(true, error);
+      }
+    );
   }
 
   fileSelect(event): any {
@@ -67,9 +77,6 @@ export class StudentComponent {
           });
         },
         complete: (results) => {
-          // we just wanna desplay currently added students
-
-          console.log(this.studentToAdd);
           // send students to server
           this.uploadStudent(this.studentToAdd);
           this.currentOp = 'Students uploaded Recently';
@@ -83,6 +90,7 @@ export class StudentComponent {
   }
 
   toast(isError: boolean, message): any {
+    // check whether error or just message and assign variable accordingly
     isError ? (this.error = message) : (this.message = message);
     // mimic a toast
     setTimeout(() => {

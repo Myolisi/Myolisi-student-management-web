@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Student } from '../../student.interface';
+import { Student } from '../models/student.interface';
 import { throwError, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
@@ -10,13 +10,15 @@ import { Injectable } from '@angular/core';
 export class StudentService {
   constructor(private http: HttpClient) {}
   baseURL = 'http://localhost:8080/api';
-  any;
+
+  // get all students
   getStudents(): Observable<Student[] | any> {
     return this.http
       .get<Student[]>(`${this.baseURL}/student/all`)
       .pipe(catchError(this.errorHandler));
   }
 
+  // send data to backend for further processing
   uploadStudent(student: Student[]): Observable<Student[] | any> {
     return this.http
       .post<Student[]>(`${this.baseURL}/student/add`, student)
@@ -25,6 +27,8 @@ export class StudentService {
 
   // handle error
   errorHandler(error: any): any {
-    throwError(error.message);
+    return throwError(
+      error.status === 0 ? 'Something went wrong' : error.message
+    );
   }
 }
