@@ -1,0 +1,100 @@
+<div class="container p-5 mt-5">
+  <div class="row">
+    <div class="col-md-6 mb-5">
+      <div class="mb-3">
+        <form [formGroup]="uploadForm">
+          <label for="formFile" class="form-label">Upload Students</label>
+          <input
+            name="username"
+            class="form-control"
+            (change)="fileSelect($event)"
+            type="file"
+            id="formFile"
+            formControlName="uploadInput"
+          />
+        </form>
+      </div>
+    </div>
+    <div class="col-md-6 pt-4">
+      <div class="mb-3" *ngIf="error">
+        <div
+          class="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+          <strong>{{ error }}</strong>
+        </div>
+      </div>
+
+      <div
+        *ngIf="message"
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+        {{ message }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="row">
+    <hr />
+    <div class="col-md-12 mb-4">
+      <div class="pb-5">
+        <button type="button" (click)="getStudents()" class="btn btn-primary">
+          View all
+        </button>
+      </div>
+
+      <div class="row d-flex m-auto">
+        <div class="col-md-10">
+          <h5 class="pb-4">{{ currentOp }}</h5>
+        </div>
+        <div class="col-md-2 text-center">
+          Results: <span class="text-success">{{ students.length }}</span>
+        </div>
+      </div>
+
+      <table class="table table-striped">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">Student N.O</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Surname</th>
+            <th scope="col">Course</th>
+            <th scope="col">Description</th>
+            <th scope="col">Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-template ngIf="students.length; else noData">
+            <tr *ngFor="let student of students">
+              <th scope="row">{{ student.studentNumber }}</th>
+              <td>{{ student.firstName }}</td>
+              <td>{{ student.surname }}</td>
+              <td>{{ student.course[0].description }}</td>
+              <td>{{ student.course[0].code }}</td>
+              <td>{{ student.course[0].grade }}</td>
+            </tr>
+          </ng-template>
+          <ng-template #noData>
+            <td colspan="4" class="p-5 table-active text-center">
+              No students to display
+            </td>
+          </ng-template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
